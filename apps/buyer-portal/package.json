@@ -1,0 +1,11 @@
+{
+  "name": "@motorghar-platform/buyer-portal",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "buyer-portal"
+  },
+  "dependencies": {
+    "@motorghar-platform/ui": "workspace:*"
+  }
+}
