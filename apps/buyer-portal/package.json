@@ -4,8 +4,5 @@
   "private": true,
   "nx": {
     "name": "buyer-portal"
-  },
-  "dependencies": {
-    "@motorghar-platform/ui": "workspace:*"
   }
 }

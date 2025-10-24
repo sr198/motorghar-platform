@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 
-import WkInput from './wk-input';
+import Ui from './ui';
 
-describe('WkInput', () => {
+describe('Ui', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<WkInput />);
+    const { baseElement } = render(<Ui />);
     expect(baseElement).toBeTruthy();
   });
 });

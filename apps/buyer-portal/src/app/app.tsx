@@ -1,49 +1,52 @@
-import { WkButton } from '@motorghar-platform/ui'
+// Uncomment this line to use CSS modules
+// import styles from './app.module.css';
+import NxWelcome from './nx-welcome';
+
+import { Route, Routes, Link } from 'react-router-dom';
 
 export function App() {
-  const handleSearch = () => {
-    console.log('Searching vehicles...')
-  }
-
-  const handleFilter = () => {
-    console.log('Opening filters...')
-  }
-
   return (
-    <div style={{ padding: '2rem', fontFamily: 'system-ui' }}>
-      <header>
-        <h1 style={{ color: '#1e293b', marginBottom: '0.5rem' }}>
-          MotorGhar - Find Your Perfect Vehicle
-        </h1>
-        <p style={{ color: '#64748b' }}>
-          Browse thousands of verified cars and bikes across Nepal
-        </p>
-      </header>
+    <div>
+      <NxWelcome title="buyer-portal" />
 
-      <main style={{ marginTop: '2rem' }}>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <WkButton
-            label="Search Vehicles"
-            variant="primary"
-            size="large"
-            onClick={handleSearch}
-          />
-
-          <WkButton
-            label="Advanced Filters"
-            variant="secondary"
-            size="medium"
-            onClick={handleFilter}
-          />
-
-          <WkButton
-            label="Danger Action"
-            variant="danger"
-            size="small"
-            disabled={true}
-          />
-        </div>
-      </main>
+      {/* START: routes */}
+      {/* These routes and navigation have been generated for you */}
+      {/* Feel free to move and update them to fit your needs */}
+      <br />
+      <hr />
+      <br />
+      <div role="navigation">
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/page-2">Page 2</Link>
+          </li>
+        </ul>
+      </div>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div>
+              This is the generated root route.{' '}
+              <Link to="/page-2">Click here for page 2.</Link>
+            </div>
+          }
+        />
+        <Route
+          path="/page-2"
+          element={
+            <div>
+              <Link to="/">Click here to go back to root page.</Link>
+            </div>
+          }
+        />
+      </Routes>
+      {/* END: routes */}
     </div>
-  )
+  );
 }
+
+export default App;

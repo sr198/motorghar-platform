@@ -10,7 +10,34 @@
       "path": "./apps/buyer-portal"
     },
     {
+      "path": "./apps/garage-portal-e2e"
+    },
+    {
+      "path": "./apps/garage-portal"
+    },
+    {
+      "path": "./apps/admin-console-e2e"
+    },
+    {
+      "path": "./apps/admin-console"
+    },
+    {
+      "path": "./apps/fastify-gateway"
+    },
+    {
+      "path": "./apps/backend-core"
+    },
+    {
       "path": "./libs/shared/ui"
+    },
+    {
+      "path": "./libs/shared/types"
+    },
+    {
+      "path": "./libs/backend/database"
+    },
+    {
+      "path": "./libs/shared/utils"
     }
   ]
 }

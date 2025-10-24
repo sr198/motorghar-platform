@@ -49,3 +49,10 @@ This file defines non-negotiable rules for everyone and every AI agent working o
 - Lint/type checks pass
 - Docs updated (README or feature docs)
 - Observability + security checks in place
+
+## 9. Monorepo structure
+- The code monorepo is managed by nx
+- All major apps and shared libs have been creatded for you
+- pnpm is the package manager
+- To define dependency add nx's implicit dependencies key in consuming app's package.json
+- Use nx command to run build, test, serve and others 
