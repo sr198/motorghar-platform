@@ -1,9 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { readFileSync } from "fs";
-import { join } from "path";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
 const prisma = new PrismaClient();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Load seed data from JSON files
 const vehiclesData = JSON.parse(

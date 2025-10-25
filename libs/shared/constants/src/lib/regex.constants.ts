@@ -12,7 +12,7 @@
  * Note: This is the current Nepal format. For multi-country support in future,
  * registration format should be configurable per country from database.
  */
-export const NEPAL_REGISTRATION_REGEX = /^[A-Z]{2}\d{1,2}[A-Z]{1,2}\d{1,4}$/;
+export const NEPAL_REGISTRATION_REGEX = /^[A-Z]{2,4}\d{1,2}[A-Z]{2,4}\d{1,4}$/;
 export const NEPAL_REGISTRATION_ERROR_MESSAGE = 'Invalid Nepal vehicle registration format (e.g., BA 1 PA 1234)';
 
 /**
