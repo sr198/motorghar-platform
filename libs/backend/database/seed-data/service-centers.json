@@ -1,0 +1,182 @@
+[
+  {
+    "name": "Nepal Auto Works",
+    "address": "Dillibazar, Kathmandu",
+    "city": "Kathmandu",
+    "lat": 27.7051,
+    "lon": 85.325,
+    "phone": "+977-1-4444444",
+    "certified": true
+  },
+  {
+    "name": "Sipradi Service Center",
+    "address": "Thapathali, Kathmandu",
+    "city": "Kathmandu",
+    "lat": 27.6969,
+    "lon": 85.3206,
+    "phone": "+977-1-5111111",
+    "certified": true
+  },
+  {
+    "name": "Hulas Motors Service",
+    "address": "Tripureshwor, Kathmandu",
+    "city": "Kathmandu",
+    "lat": 27.6933,
+    "lon": 85.315,
+    "phone": "+977-1-4222222",
+    "certified": true
+  },
+  {
+    "name": "MAW Enterprises",
+    "address": "Naxal, Kathmandu",
+    "city": "Kathmandu",
+    "lat": 27.7113,
+    "lon": 85.3264,
+    "phone": "+977-1-4433333",
+    "certified": true
+  },
+  {
+    "name": "National Auto Center",
+    "address": "Kalanki, Kathmandu",
+    "city": "Kathmandu",
+    "lat": 27.6947,
+    "lon": 85.2802,
+    "phone": "+977-1-5333333",
+    "certified": false
+  },
+  {
+    "name": "Dhaulagiri Auto Service",
+    "address": "Balaju, Kathmandu",
+    "city": "Kathmandu",
+    "lat": 27.7367,
+    "lon": 85.3025,
+    "phone": "+977-1-4355555",
+    "certified": false
+  },
+  {
+    "name": "Everest Automobile",
+    "address": "Koteshwor, Kathmandu",
+    "city": "Kathmandu",
+    "lat": 27.6769,
+    "lon": 85.3469,
+    "phone": "+977-1-4566666",
+    "certified": true
+  },
+  {
+    "name": "Himalayan Motors",
+    "address": "Chabahil, Kathmandu",
+    "city": "Kathmandu",
+    "lat": 27.7203,
+    "lon": 85.3481,
+    "phone": "+977-1-4777777",
+    "certified": false
+  },
+  {
+    "name": "Prime Auto Service",
+    "address": "Jwagal, Lalitpur",
+    "city": "Lalitpur",
+    "lat": 27.6669,
+    "lon": 85.3228,
+    "phone": "+977-1-5888888",
+    "certified": true
+  },
+  {
+    "name": "Kathmandu Auto Garage",
+    "address": "Pulchowk, Lalitpur",
+    "city": "Lalitpur",
+    "lat": 27.6792,
+    "lon": 85.3169,
+    "phone": "+977-1-5999999",
+    "certified": false
+  },
+  {
+    "name": "Valley Service Center",
+    "address": "Kupondole, Lalitpur",
+    "city": "Lalitpur",
+    "lat": 27.6914,
+    "lon": 85.3136,
+    "phone": "+977-1-5555555",
+    "certified": true
+  },
+  {
+    "name": "Metro Auto Works",
+    "address": "Satdobato, Lalitpur",
+    "city": "Lalitpur",
+    "lat": 27.6572,
+    "lon": 85.3333,
+    "phone": "+977-1-5444444",
+    "certified": false
+  },
+  {
+    "name": "Summit Motors Service",
+    "address": "Bhaisepati, Lalitpur",
+    "city": "Lalitpur",
+    "lat": 27.6464,
+    "lon": 85.335,
+    "phone": "+977-1-5666666",
+    "certified": true
+  },
+  {
+    "name": "City Auto Repair",
+    "address": "Thimi, Bhaktapur",
+    "city": "Bhaktapur",
+    "lat": 27.6814,
+    "lon": 85.385,
+    "phone": "+977-1-6111111",
+    "certified": false
+  },
+  {
+    "name": "Madhyapur Service Point",
+    "address": "Lokanthali, Bhaktapur",
+    "city": "Bhaktapur",
+    "lat": 27.6731,
+    "lon": 85.4075,
+    "phone": "+977-1-6222222",
+    "certified": true
+  },
+  {
+    "name": "Heritage Auto Center",
+    "address": "Suryabinayak, Bhaktapur",
+    "city": "Bhaktapur",
+    "lat": 27.6678,
+    "lon": 85.4358,
+    "phone": "+977-1-6333333",
+    "certified": false
+  },
+  {
+    "name": "Royal Auto Service",
+    "address": "Nagarkot Road, Bhaktapur",
+    "city": "Bhaktapur",
+    "lat": 27.69,
+    "lon": 85.42,
+    "phone": "+977-1-6444444",
+    "certified": false
+  },
+  {
+    "name": "Nepal Bike Service",
+    "address": "New Baneshwor, Kathmandu",
+    "city": "Kathmandu",
+    "lat": 27.6908,
+    "lon": 85.3389,
+    "phone": "+977-1-4888888",
+    "certified": true
+  },
+  {
+    "name": "Two Wheeler Hub",
+    "address": "Putalisadak, Kathmandu",
+    "city": "Kathmandu",
+    "lat": 27.7064,
+    "lon": 85.3169,
+    "phone": "+977-1-4999999",
+    "certified": false
+  },
+  {
+    "name": "Valley Motor Clinic",
+    "address": "Maharajgunj, Kathmandu",
+    "city": "Kathmandu",
+    "lat": 27.7333,
+    "lon": 85.3308,
+    "phone": "+977-1-4711111",
+    "certified": true
+  }
+]

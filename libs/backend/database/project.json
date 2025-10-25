@@ -1,0 +1,60 @@
+{
+  "name": "database",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/database/src",
+  "projectType": "library",
+  "targets": {
+    "db:migrate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotenv -e ../../../.env -- prisma migrate dev",
+        "cwd": "libs/backend/database"
+      }
+    },
+    "db:migrate:deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotenv -e ../../../.env -- prisma migrate deploy",
+        "cwd": "libs/backend/database"
+      }
+    },
+    "db:seed": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotenv -e ../../../.env -- ts-node --project ../../../tsconfig.base.json prisma/seed.ts",
+        "cwd": "libs/backend/database"
+      },
+      "dependsOn": ["db:generate"]
+    },
+    "db:generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotenv -e ../../../.env -- prisma generate",
+        "cwd": "libs/backend/database"
+      },
+      "outputs": ["{workspaceRoot}/libs/backend/database/generated"]
+    },
+    "db:studio": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotenv -e ../../../.env -- prisma studio",
+        "cwd": "libs/backend/database"
+      }
+    },
+    "db:reset": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotenv -e ../../../.env -- prisma migrate reset --force",
+        "cwd": "libs/backend/database"
+      }
+    },
+    "db:validate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotenv -e ../../../.env -- prisma validate",
+        "cwd": "libs/backend/database"
+      }
+    }
+  },
+  "tags": ["type:infrastructure", "scope:backend"]
+}

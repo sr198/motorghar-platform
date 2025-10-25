@@ -1,0 +1,318 @@
+// MotorGhar Platform - Prisma Schema
+// Phase 0: Infrastructure & Database Schema
+// Reference: Solution Design v1.0 § 5 (Data Model)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  OWNER
+  ADMIN
+}
+
+enum VehicleType {
+  CAR
+  BIKE
+}
+
+enum UsagePattern {
+  DAILY
+  OCCASIONAL
+  RARE
+}
+
+enum ReminderType {
+  SERVICE
+  INSURANCE
+  EMI
+  CUSTOM
+}
+
+enum ReminderStatus {
+  PENDING
+  SENT
+  DISMISSED
+}
+
+enum NewsType {
+  NEWS
+  EVENT
+  RECALL
+}
+
+enum DocumentKind {
+  BLUEBOOK
+  INSURANCE
+  TAX
+  OTHER
+}
+
+enum BroadcastTarget {
+  ALL
+  OWNERS
+  VEHICLES
+}
+
+enum ImageSource {
+  DEFAULT
+  USER
+  AI
+}
+
+// Users Table - § 5.1
+model User {
+  id               String    @id @default(uuid()) @db.Uuid
+  email            String    @unique
+  passwordHash     String    @map("password_hash")
+  name             String
+  phone            String?
+  address          String?
+  city             String?
+  lang             String    @default("en")
+  role             UserRole  @default(OWNER)
+  preferences      Json      @default("{}") @db.JsonB
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  vehicles         Vehicle[]
+  auditLogs        AuditLog[]
+  broadcastMessages BroadcastMessage[]
+  addresses        Address[]
+  vehicleGallery   VehicleGallery[]
+
+  @@index([email])
+  @@map("users")
+}
+
+// Address Table - § 5.4 (International-Ready)
+model Address {
+  id             String    @id @default(uuid()) @db.Uuid
+  userId         String?   @map("user_id") @db.Uuid
+  line1          String
+  line2          String?
+  city           String?
+  district       String?
+  province       String?
+  postalCode     String?   @map("postal_code")
+  countryCode    String    @default("NP") @map("country_code") @db.Char(2)
+  lat            Decimal?  @db.Decimal(9, 6)
+  lon            Decimal?  @db.Decimal(9, 6)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relations
+  user           User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+// Vehicle Catalog Table - § 5.1
+model VehicleCatalog {
+  id             String        @id @default(uuid()) @db.Uuid
+  type           VehicleType
+  make           String
+  model          String
+  year           Int           @db.SmallInt
+  trim           String?
+  engine         String?
+  transmission   String?
+  fuel           String?
+  bodyType       String?       @map("body_type")
+  specs          Json          @default("{}") @db.JsonB
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relations
+  vehicles       Vehicle[]
+
+  @@index([make, model, year])
+  @@index([type])
+  @@map("vehicle_catalog")
+}
+
+// Vehicles Table - § 5.1
+model Vehicle {
+  id                 String         @id @default(uuid()) @db.Uuid
+  userId             String         @map("user_id") @db.Uuid
+  catalogId          String         @map("catalog_id") @db.Uuid
+  registrationNo     String?        @unique @map("registration_no")
+  color              String?
+  nickname           String?
+  mileage            Int?
+  condition          String?
+  usagePattern       UsagePattern?  @map("usage_pattern")
+  notes              String?        @db.Text
+  defaultImageKey    String?        @map("default_image_key")
+  createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  user               User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  catalog            VehicleCatalog @relation(fields: [catalogId], references: [id])
+  serviceRecords     ServiceRecord[]
+  reminders          Reminder[]
+  documents          Document[]
+  gallery            VehicleGallery[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([registrationNo])
+  @@map("vehicles")
+}
+
+// Service Centers Table - § 5.1
+model ServiceCenter {
+  id             String          @id @default(uuid()) @db.Uuid
+  name           String
+  address        String
+  city           String
+  lat            Decimal         @db.Decimal(9, 6)
+  lon            Decimal         @db.Decimal(9, 6)
+  phone          String?
+  email          String?
+  website        String?
+  certified      Boolean         @default(false)
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relations
+  serviceRecords ServiceRecord[]
+
+  @@index([city])
+  @@index([lat, lon])
+  @@map("service_centers")
+}
+
+// Service Records Table - § 5.1
+model ServiceRecord {
+  id             String         @id @default(uuid()) @db.Uuid
+  vehicleId      String         @map("vehicle_id") @db.Uuid
+  date           DateTime       @db.Date
+  centerId       String?        @map("center_id") @db.Uuid
+  odometer       Int?
+  cost           Decimal        @default(0) @db.Decimal(10, 2)
+  notes          String?        @db.Text
+  rating         Int?           @db.SmallInt
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relations
+  vehicle        Vehicle        @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  center         ServiceCenter? @relation(fields: [centerId], references: [id], onDelete: SetNull)
+
+  @@index([vehicleId, date(sort: Desc)])
+  @@map("service_records")
+}
+
+// Reminders Table - § 5.1
+model Reminder {
+  id             String          @id @default(uuid()) @db.Uuid
+  vehicleId      String          @map("vehicle_id") @db.Uuid
+  type           ReminderType
+  title          String
+  dueDate        DateTime        @map("due_date") @db.Date
+  status         ReminderStatus  @default(PENDING)
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relations
+  vehicle        Vehicle         @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId, dueDate, status])
+  @@map("reminders")
+}
+
+// News Items Table - § 5.1
+model NewsItem {
+  id             String      @id @default(uuid()) @db.Uuid
+  title          String
+  content        String      @db.Text
+  type           NewsType
+  make           String?
+  model          String?
+  yearMin        Int?        @map("year_min") @db.SmallInt
+  yearMax        Int?        @map("year_max") @db.SmallInt
+  publishedAt    DateTime    @map("published_at") @db.Timestamptz(6)
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([make, model, publishedAt(sort: Desc)])
+  @@index([publishedAt(sort: Desc)])
+  @@map("news_items")
+}
+
+// Documents Table - § 5.1
+model Document {
+  id             String        @id @default(uuid()) @db.Uuid
+  vehicleId      String        @map("vehicle_id") @db.Uuid
+  kind           DocumentKind
+  objectKey      String        @map("object_key")
+  mime           String
+  sizeBytes      Int           @map("size_bytes")
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relations
+  vehicle        Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId])
+  @@map("documents")
+}
+
+// Vehicle Gallery Table - § 18.4
+model VehicleGallery {
+  id             String        @id @default(uuid()) @db.Uuid
+  vehicleId      String        @map("vehicle_id") @db.Uuid
+  userId         String        @map("user_id") @db.Uuid
+  objectKey      String        @map("object_key")
+  mime           String
+  sizeBytes      Int           @map("size_bytes")
+  isPrimary      Boolean       @default(false) @map("is_primary")
+  source         ImageSource?  @default(USER)
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relations
+  vehicle        Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  user           User          @relation(fields: [userId], references: [id])
+
+  @@index([vehicleId, createdAt(sort: Desc)])
+  @@unique([vehicleId, isPrimary], name: "unique_primary_image", map: "unique_primary_per_vehicle")
+  @@map("vehicle_gallery")
+}
+
+// Broadcast Messages Table - § 5.2
+model BroadcastMessage {
+  id             String          @id @default(uuid()) @db.Uuid
+  title          String
+  message        String          @db.Text
+  filters        Json?           @db.JsonB
+  target         BroadcastTarget
+  createdBy      String          @map("created_by") @db.Uuid
+  sentAt         DateTime?       @map("sent_at") @db.Timestamptz(6)
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relations
+  creator        User            @relation(fields: [createdBy], references: [id])
+
+  @@index([createdBy])
+  @@map("broadcast_messages")
+}
+
+// Audit Logs Table - § 5.1
+model AuditLog {
+  id             String    @id @default(uuid()) @db.Uuid
+  actorUserId    String    @map("actor_user_id") @db.Uuid
+  action         String
+  entity         String
+  entityId       String    @map("entity_id")
+  diff           Json?     @db.JsonB
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relations
+  actor          User      @relation(fields: [actorUserId], references: [id])
+
+  @@index([actorUserId, createdAt(sort: Desc)])
+  @@index([entity, entityId])
+  @@map("audit_logs")
+}

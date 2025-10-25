@@ -1,6 +1,7 @@
 {
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
+    "composite": true,
     "baseUrl": ".",
     "rootDir": "src",
     "outDir": "dist",
@@ -10,10 +11,6 @@
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],
-  "references": [
-    {
-      "path": "../constants/tsconfig.lib.json"
-    }
-  ],
+  "references": [],
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }

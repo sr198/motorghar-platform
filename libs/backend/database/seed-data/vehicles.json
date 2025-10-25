@@ -1,0 +1,260 @@
+[
+  {
+    "type": "CAR",
+    "make": "Maruti Suzuki",
+    "model": "Alto",
+    "year": 2023,
+    "trim": "VXI",
+    "engine": "796cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "Hatchback"
+  },
+  {
+    "type": "CAR",
+    "make": "Maruti Suzuki",
+    "model": "Swift",
+    "year": 2023,
+    "trim": "VXI",
+    "engine": "1197cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "Hatchback"
+  },
+  {
+    "type": "CAR",
+    "make": "Maruti Suzuki",
+    "model": "Dzire",
+    "year": 2023,
+    "trim": "VXI",
+    "engine": "1197cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "Sedan"
+  },
+  {
+    "type": "CAR",
+    "make": "Maruti Suzuki",
+    "model": "Ertiga",
+    "year": 2023,
+    "trim": "VXI",
+    "engine": "1462cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "MPV"
+  },
+  {
+    "type": "CAR",
+    "make": "Maruti Suzuki",
+    "model": "Vitara Brezza",
+    "year": 2023,
+    "trim": "VXI",
+    "engine": "1462cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "SUV"
+  },
+  {
+    "type": "CAR",
+    "make": "Hyundai",
+    "model": "Grand i10",
+    "year": 2023,
+    "trim": "Magna",
+    "engine": "1197cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "Hatchback"
+  },
+  {
+    "type": "CAR",
+    "make": "Hyundai",
+    "model": "i20",
+    "year": 2023,
+    "trim": "Sportz",
+    "engine": "1197cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "Hatchback"
+  },
+  {
+    "type": "CAR",
+    "make": "Hyundai",
+    "model": "Venue",
+    "year": 2023,
+    "trim": "S",
+    "engine": "998cc Turbo",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "SUV"
+  },
+  {
+    "type": "CAR",
+    "make": "Hyundai",
+    "model": "Creta",
+    "year": 2023,
+    "trim": "SX",
+    "engine": "1497cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "SUV"
+  },
+  {
+    "type": "CAR",
+    "make": "Hyundai",
+    "model": "Tucson",
+    "year": 2023,
+    "trim": "GLS",
+    "engine": "1999cc",
+    "transmission": "Automatic",
+    "fuel": "Diesel",
+    "bodyType": "SUV"
+  },
+  {
+    "type": "CAR",
+    "make": "Toyota",
+    "model": "Yaris",
+    "year": 2023,
+    "trim": "G",
+    "engine": "1496cc",
+    "transmission": "CVT",
+    "fuel": "Petrol",
+    "bodyType": "Sedan"
+  },
+  {
+    "type": "CAR",
+    "make": "Toyota",
+    "model": "Corolla",
+    "year": 2023,
+    "trim": "Altis",
+    "engine": "1798cc",
+    "transmission": "CVT",
+    "fuel": "Petrol",
+    "bodyType": "Sedan"
+  },
+  {
+    "type": "CAR",
+    "make": "Toyota",
+    "model": "Fortuner",
+    "year": 2023,
+    "trim": "4x2",
+    "engine": "2755cc",
+    "transmission": "Automatic",
+    "fuel": "Diesel",
+    "bodyType": "SUV"
+  },
+  {
+    "type": "CAR",
+    "make": "Toyota",
+    "model": "Land Cruiser",
+    "year": 2023,
+    "trim": "VX",
+    "engine": "2755cc",
+    "transmission": "Automatic",
+    "fuel": "Diesel",
+    "bodyType": "SUV"
+  },
+  {
+    "type": "CAR",
+    "make": "Toyota",
+    "model": "Hilux",
+    "year": 2023,
+    "trim": "Double Cab",
+    "engine": "2755cc",
+    "transmission": "Manual",
+    "fuel": "Diesel",
+    "bodyType": "Pickup"
+  },
+  {
+    "type": "CAR",
+    "make": "Honda",
+    "model": "City",
+    "year": 2023,
+    "trim": "V",
+    "engine": "1498cc",
+    "transmission": "CVT",
+    "fuel": "Petrol",
+    "bodyType": "Sedan"
+  },
+  {
+    "type": "CAR",
+    "make": "Honda",
+    "model": "Civic",
+    "year": 2023,
+    "trim": "VTi",
+    "engine": "1799cc",
+    "transmission": "CVT",
+    "fuel": "Petrol",
+    "bodyType": "Sedan"
+  },
+  {
+    "type": "CAR",
+    "make": "Honda",
+    "model": "CR-V",
+    "year": 2023,
+    "trim": "2WD",
+    "engine": "1993cc",
+    "transmission": "CVT",
+    "fuel": "Petrol",
+    "bodyType": "SUV"
+  },
+  {
+    "type": "BIKE",
+    "make": "Hero",
+    "model": "Splendor Plus",
+    "year": 2023,
+    "engine": "97.2cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "Commuter"
+  },
+  {
+    "type": "BIKE",
+    "make": "Hero",
+    "model": "Passion Pro",
+    "year": 2023,
+    "engine": "113cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "Commuter"
+  },
+  {
+    "type": "BIKE",
+    "make": "Honda",
+    "model": "CB Shine",
+    "year": 2023,
+    "engine": "124cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "Commuter"
+  },
+  {
+    "type": "BIKE",
+    "make": "Bajaj",
+    "model": "Pulsar NS160",
+    "year": 2023,
+    "engine": "160.3cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "Sport"
+  },
+  {
+    "type": "BIKE",
+    "make": "Yamaha",
+    "model": "FZ-S",
+    "year": 2023,
+    "engine": "149cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "Sport"
+  },
+  {
+    "type": "BIKE",
+    "make": "Royal Enfield",
+    "model": "Classic 350",
+    "year": 2023,
+    "engine": "349cc",
+    "transmission": "Manual",
+    "fuel": "Petrol",
+    "bodyType": "Classic"
+  }
+]

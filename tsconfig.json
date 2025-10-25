@@ -41,6 +41,12 @@
     },
     {
       "path": "./libs/backend/auth"
+    },
+    {
+      "path": "./libs/shared/config"
+    },
+    {
+      "path": "./libs/shared/constants"
     }
   ]
 }

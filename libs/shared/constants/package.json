@@ -1,7 +1,6 @@
 {
-  "name": "@motorghar-platform/utils",
+  "name": "@motorghar-platform/constants",
   "version": "0.0.1",
-  "private": true,
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -9,19 +8,15 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "@motorghar-platform/source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     }
   },
   "nx": {
-    "name": "utils"
+    "name": "constants"
   },
   "dependencies": {
-    "tslib": "^2.3.0",
-    "pino": "^10.1.0",
-    "pino-pretty": "^13.1.2",
-    "@motorghar-platform/constants": "workspace:*"
+    "tslib": "^2.3.0"
   }
 }
