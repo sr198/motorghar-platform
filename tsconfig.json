@@ -38,6 +38,9 @@
     },
     {
       "path": "./libs/shared/utils"
+    },
+    {
+      "path": "./libs/backend/auth"
     }
   ]
 }
