@@ -21,7 +21,7 @@
 **Reference:** Design Doc § 2, 6 (Architecture, API Design)
 
 - [ ] Fastify API Gateway application (`apps/api-gateway`)
-- [ ] JWT authentication middleware (using `@motorghar/shared-auth`)
+- [ ] JWT authentication middleware (using `@motorghar-platform/auth`)
 - [ ] RBAC enforcement (ADMIN role required)
 - [ ] Request validation (zod schemas)
 - [ ] Rate limiting (300 req/min per JWT)

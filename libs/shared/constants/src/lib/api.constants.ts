@@ -53,3 +53,7 @@ export const CUSTOM_HEADERS = {
   IDEMPOTENCY_KEY: 'Idempotency-Key',
   API_VERSION: 'X-API-Version',
 } as const;
+
+// Response Compression
+export const COMPRESSION_THRESHOLD_BYTES = 1024; // Only compress responses > 1KB
+export const COMPRESSION_ENCODINGS = ['br', 'gzip', 'deflate'] as const;

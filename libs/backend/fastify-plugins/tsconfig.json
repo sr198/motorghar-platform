@@ -1,0 +1,25 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "../repositories"
+    },
+    {
+      "path": "../auth"
+    },
+    {
+      "path": "../rbac-service"
+    },
+    {
+      "path": "../auth-service"
+    },
+    {
+      "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}

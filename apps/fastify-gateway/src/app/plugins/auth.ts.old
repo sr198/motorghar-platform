@@ -1,0 +1,77 @@
+/**
+ * Authentication Plugin
+ * JWT authentication and RBAC middleware
+ * Reference: Phase 1 Spec § 1, 2 (Auth & RBAC)
+ */
+
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import fp from 'fastify-plugin';
+import { verifyToken, extractBearerToken, type TokenPayload } from '@motorghar-platform/auth';
+import { isTokenBlacklisted } from '@motorghar-platform/auth';
+import { redis } from '@motorghar-platform/database';
+import { getEnvConfig } from '@motorghar-platform/config';
+import { HTTP_STATUS, USER_ROLE } from '@motorghar-platform/constants';
+
+// Extend Fastify request type to include user
+declare module 'fastify' {
+  interface FastifyRequest {
+    user?: TokenPayload;
+  }
+}
+
+export default fp(async function (fastify: FastifyInstance) {
+  const config = getEnvConfig();
+
+  /**
+   * Authentication decorator - verifies JWT token
+   */
+  fastify.decorate('authenticate', async function (request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const token = extractBearerToken(request.headers.authorization);
+
+      if (!token) {
+        return reply.code(HTTP_STATUS.UNAUTHORIZED).send({
+          success: false,
+          error: 'Missing or invalid authorization header',
+        });
+      }
+
+      // Check if token is blacklisted
+      const blacklisted = await isTokenBlacklisted(redis, token);
+      if (blacklisted) {
+        return reply.code(HTTP_STATUS.UNAUTHORIZED).send({
+          success: false,
+          error: 'Token has been revoked',
+        });
+      }
+
+      // Verify token
+      const payload = verifyToken(token, config.JWT_SECRET);
+      request.user = payload;
+    } catch (error) {
+      return reply.code(HTTP_STATUS.UNAUTHORIZED).send({
+        success: false,
+        error: 'Invalid or expired token',
+      });
+    }
+  });
+
+  /**
+   * RBAC decorator - ensures user has ADMIN role
+   */
+  fastify.decorate('requireAdmin', async function (request: FastifyRequest, reply: FastifyReply) {
+    if (!request.user) {
+      return reply.code(HTTP_STATUS.UNAUTHORIZED).send({
+        success: false,
+        error: 'Authentication required',
+      });
+    }
+
+    if (request.user.role !== USER_ROLE.ADMIN) {
+      return reply.code(HTTP_STATUS.FORBIDDEN).send({
+        success: false,
+        error: 'Admin access required',
+      });
+    }
+  });
+});

@@ -4,6 +4,33 @@
   "include": [],
   "references": [
     {
+      "path": "../../libs/backend/repositories"
+    },
+    {
+      "path": "../../libs/backend/rbac-service"
+    },
+    {
+      "path": "../../libs/backend/auth-service"
+    },
+    {
+      "path": "../../libs/backend/fastify-plugins"
+    },
+    {
+      "path": "../../libs/backend/database"
+    },
+    {
+      "path": "../../libs/shared/types"
+    },
+    {
+      "path": "../../libs/backend/auth"
+    },
+    {
+      "path": "../../libs/shared/config"
+    },
+    {
+      "path": "../../libs/shared/constants"
+    },
+    {
       "path": "./tsconfig.app.json"
     },
     {

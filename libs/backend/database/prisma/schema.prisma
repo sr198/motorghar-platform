@@ -87,9 +87,33 @@ model User {
   broadcastMessages BroadcastMessage[]
   addresses        Address[]
   vehicleGallery   VehicleGallery[]
+  sessions         Session[]
 
   @@index([email])
   @@map("users")
+}
+
+// Sessions Table - Phase 1 (Auth & RBAC)
+// Reference: ADR 001 - Clean Architecture for Auth & RBAC
+// Supports multi-device sessions, refresh token rotation, and session management
+model Session {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  refreshToken    String    @unique @map("refresh_token")
+  deviceInfo      Json      @map("device_info") @db.JsonB
+  ipAddress       String    @map("ip_address")
+  expiresAt       DateTime  @map("expires_at") @db.Timestamptz(6)
+  lastActivityAt  DateTime  @map("last_activity_at") @db.Timestamptz(6)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  revokedAt       DateTime? @map("revoked_at") @db.Timestamptz(6)
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([refreshToken])
+  @@index([expiresAt])
+  @@map("sessions")
 }
 
 // Address Table - § 5.4 (International-Ready)
@@ -131,6 +155,7 @@ model VehicleCatalog {
 
   // Relations
   vehicles       Vehicle[]
+  videos         CatalogVideo[]
 
   @@index([make, model, year])
   @@index([type])
@@ -279,6 +304,23 @@ model VehicleGallery {
   @@index([vehicleId, createdAt(sort: Desc)])
   @@unique([vehicleId, isPrimary], name: "unique_primary_image", map: "unique_primary_per_vehicle")
   @@map("vehicle_gallery")
+}
+
+// Catalog Videos Table - Phase 1 § 6 (Video Management)
+model CatalogVideo {
+  id                String         @id @default(uuid()) @db.Uuid
+  catalogVehicleId  String         @map("catalog_vehicle_id") @db.Uuid
+  title             String
+  videoUrl          String         @map("video_url")
+  thumbnailUrl      String?        @map("thumbnail_url")
+  displayOrder      Int            @default(0) @map("display_order")
+  createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relations
+  catalogVehicle    VehicleCatalog @relation(fields: [catalogVehicleId], references: [id], onDelete: Cascade)
+
+  @@index([catalogVehicleId, displayOrder])
+  @@map("catalog_videos")
 }
 
 // Broadcast Messages Table - § 5.2

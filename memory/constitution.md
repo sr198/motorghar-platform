@@ -73,13 +73,39 @@ This file defines non-negotiable rules for everyone and every AI agent working o
 
 ---
 
-## 9. Monorepo Structure
+## 9. Monorepo Structure & Dependency Management
+
+### 9.1 Nx Monorepo Rules
 - The code monorepo is managed by **Nx**
 - All major apps and shared libs are created using Nx generators
 - **pnpm** is the package manager
-- Since we are using pnpm, to define dependency add explit dependency to internal library in the caller's package.json
 - Use `nx` command to run build, test, serve and others
 - Always use Nx generators (`nx generate`) to create new libraries/apps - never create manually
+
+### 9.2 Dependency Management
+- **External dependencies**: Add to the **root** `package.json` (not app/library specific)
+- **Internal dependencies**: Add explicit workspace dependency to the consuming app/library's `package.json`
+  - Format: `"@motorghar-platform/lib-name": "workspace:*"`
+- After adding dependencies, user will run `pnpm install` - do NOT run it yourself
+
+### 9.3 Command Execution Policy ⚠️ CRITICAL
+**Rule:** AI agents MUST NOT run package manager or build commands. User runs all commands.
+
+**Commands User Will Run:**
+- ❌ **NEVER run**: `pnpm install`, `pnpm add`, `npm install`, `yarn install`
+- ❌ **NEVER run**: `nx build`, `nx serve`, `nx test`
+- ❌ **NEVER run**: Any command that modifies dependencies or builds artifacts
+
+**What AI Should Do Instead:**
+- ✅ **Provide instructions**: "Please run: `pnpm install`"
+- ✅ **Explain next steps**: "After installing, run: `nx serve fastify-gateway`"
+- ✅ **List commands needed**: Provide clear, copy-paste ready commands for the user
+
+**Why This Rule Exists:**
+- User stays on top of all changes in real-time
+- User controls when installs/builds happen
+- Prevents unexpected state changes
+- Better for development workflow and debugging
 
 ---
 

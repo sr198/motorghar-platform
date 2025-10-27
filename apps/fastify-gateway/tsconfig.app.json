@@ -13,5 +13,34 @@
     "jest.config.ts",
     "src/**/*.spec.ts",
     "src/**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "../../libs/backend/repositories/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/backend/rbac-service/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/backend/auth-service/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/backend/fastify-plugins/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/backend/database/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/shared/types/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/backend/auth/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/shared/config/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/shared/constants/tsconfig.lib.json"
+    }
   ]
 }

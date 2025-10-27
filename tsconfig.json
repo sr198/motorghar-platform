@@ -47,6 +47,18 @@
     },
     {
       "path": "./libs/shared/constants"
+    },
+    {
+      "path": "./libs/backend/repositories"
+    },
+    {
+      "path": "./libs/backend/auth-service"
+    },
+    {
+      "path": "./libs/backend/rbac-service"
+    },
+    {
+      "path": "./libs/backend/fastify-plugins"
     }
   ]
 }

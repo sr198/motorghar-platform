@@ -1,22 +1,17 @@
 /**
  * Authentication & Security Constants
- * JWT, password hashing, and security-related settings
+ * System-level constants only - validation rules are inline in schemas
+ *
+ * Note: Validation rules (min lengths, etc.) will be moved to config service in Phase 2+
  * Reference: Constitution § 4 - Security & Data
+ * Reference: ADR 001 - Clean Architecture for Auth & RBAC
  */
 
-// JWT Configuration
-export const MIN_JWT_SECRET_LENGTH = 32;
-export const JWT_ACCESS_EXPIRY_DEFAULT = '15m';
-export const JWT_REFRESH_EXPIRY_DEFAULT = '7d';
-
-// Password Hashing
-export const BCRYPT_SALT_ROUNDS_DEFAULT = 12;
-export const BCRYPT_SALT_ROUNDS_MIN = 10;
-export const BCRYPT_SALT_ROUNDS_MAX = 15;
-
-// Session & Token
-export const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60; // 7 days
-export const TOKEN_BLACKLIST_TTL_SECONDS = 7 * 24 * 60 * 60; // 7 days
+// User Roles (matching Prisma UserRole enum)
+export const USER_ROLE = {
+  OWNER: 'OWNER',
+  ADMIN: 'ADMIN',
+} as const;
 
 // Security Headers
 export const SECURITY_HEADERS = {
