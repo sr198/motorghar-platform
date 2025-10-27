@@ -125,7 +125,7 @@ VIN-based lookup, marketplace, and inspection features will follow in future ver
 - **Cache:** Redis 7 (ioredis), optional BullMQ later (not in MVP).  
 - **Storage:** MinIO with server‑side encryption (SSE‑S3).  
 - **Auth:** JWT (HS256) with refresh tokens; bcrypt for password hashing.  
-- **Testing:** Vitest/Jest (unit), Supertest (API), Playwright (E2E).  
+- **Testing:** Jest (unit), Supertest (API), Playwright (E2E).  
 - **CI/CD:** Nx cache + GitHub/GitLab CI, Docker buildx + compose, DB migrations via Prisma.  
 - **Localization:** English/Nepali key bundle from a central i18n catalog package.
 

@@ -1,0 +1,278 @@
+/**
+ * Auth Plugin Tests
+ * Tests for JWT authentication and RBAC middleware
+ * Reference: Constitution § 3 - Testing Requirements
+ */
+
+import Fastify, { FastifyInstance } from 'fastify';
+import { jest } from '@jest/globals';
+import authPlugin from './auth';
+import { HTTP_STATUS, USER_ROLE } from '@motorghar-platform/constants';
+import type { TokenPayload } from '@motorghar-platform/auth';
+
+// Mock dependencies
+jest.mock('@motorghar-platform/auth', () => ({
+  verifyToken: jest.fn<(token: string, secret: string) => TokenPayload>(),
+  extractBearerToken: jest.fn<(header: string | undefined) => string | null>(),
+  isTokenBlacklisted: jest.fn<(redis: any, token: string) => Promise<boolean>>(),
+}));
+
+jest.mock('@motorghar-platform/database', () => ({
+  redis: {
+    ping: jest.fn(),
+  },
+}));
+
+jest.mock('@motorghar-platform/config', () => ({
+  getEnvConfig: jest.fn(() => ({
+    JWT_SECRET: 'test-secret-key-minimum-32-characters-long',
+    NODE_ENV: 'test',
+  })),
+}));
+
+import { verifyToken, extractBearerToken, isTokenBlacklisted } from '@motorghar-platform/auth';
+
+describe('Auth Plugin', () => {
+  let server: FastifyInstance;
+
+  beforeEach(async () => {
+    server = Fastify();
+    await server.register(authPlugin);
+
+    // Reset all mocks
+    jest.clearAllMocks();
+  });
+
+  afterEach(async () => {
+    await server.close();
+  });
+
+  describe('authenticate decorator', () => {
+    it('should reject requests without authorization header', async () => {
+      server.get('/test', {
+        preHandler: server.authenticate,
+        handler: async () => ({ success: true }),
+      });
+
+      (extractBearerToken as jest.MockedFunction<typeof extractBearerToken>).mockReturnValue(null);
+
+      const response = await server.inject({
+        method: 'GET',
+        url: '/test',
+      });
+
+      expect(response.statusCode).toBe(HTTP_STATUS.UNAUTHORIZED);
+      expect(response.json()).toEqual({
+        success: false,
+        error: 'Missing or invalid authorization header',
+      });
+    });
+
+    it('should reject blacklisted tokens', async () => {
+      server.get('/test', {
+        preHandler: server.authenticate,
+        handler: async () => ({ success: true }),
+      });
+
+      const mockToken = 'valid.jwt.token';
+      (extractBearerToken as jest.MockedFunction<typeof extractBearerToken>).mockReturnValue(mockToken);
+      (isTokenBlacklisted as jest.MockedFunction<typeof isTokenBlacklisted>).mockResolvedValue(true);
+
+      const response = await server.inject({
+        method: 'GET',
+        url: '/test',
+        headers: {
+          authorization: `Bearer ${mockToken}`,
+        },
+      });
+
+      expect(response.statusCode).toBe(HTTP_STATUS.UNAUTHORIZED);
+      expect(response.json()).toEqual({
+        success: false,
+        error: 'Token has been revoked',
+      });
+      expect(isTokenBlacklisted).toHaveBeenCalledWith(expect.anything(), mockToken);
+    });
+
+    it('should reject invalid/expired tokens', async () => {
+      server.get('/test', {
+        preHandler: server.authenticate,
+        handler: async () => ({ success: true }),
+      });
+
+      const mockToken = 'invalid.jwt.token';
+      (extractBearerToken as jest.MockedFunction<typeof extractBearerToken>).mockReturnValue(mockToken);
+      (isTokenBlacklisted as jest.MockedFunction<typeof isTokenBlacklisted>).mockResolvedValue(false);
+      (verifyToken as jest.MockedFunction<typeof verifyToken>).mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
+
+      const response = await server.inject({
+        method: 'GET',
+        url: '/test',
+        headers: {
+          authorization: `Bearer ${mockToken}`,
+        },
+      });
+
+      expect(response.statusCode).toBe(HTTP_STATUS.UNAUTHORIZED);
+      expect(response.json()).toEqual({
+        success: false,
+        error: 'Invalid or expired token',
+      });
+    });
+
+    it('should accept valid tokens and attach user to request', async () => {
+      const mockPayload: TokenPayload = {
+        userId: 'user-123',
+        email: 'admin@motorghar.com',
+        role: 'ADMIN',
+      };
+
+      server.get('/test', {
+        preHandler: server.authenticate,
+        handler: async (request) => {
+          return { success: true, user: request.user };
+        },
+      });
+
+      const mockToken = 'valid.jwt.token';
+      (extractBearerToken as jest.MockedFunction<typeof extractBearerToken>).mockReturnValue(mockToken);
+      (isTokenBlacklisted as jest.MockedFunction<typeof isTokenBlacklisted>).mockResolvedValue(false);
+      (verifyToken as jest.MockedFunction<typeof verifyToken>).mockReturnValue(mockPayload);
+
+      const response = await server.inject({
+        method: 'GET',
+        url: '/test',
+        headers: {
+          authorization: `Bearer ${mockToken}`,
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = response.json();
+      expect(body.success).toBe(true);
+      expect(body.user).toEqual(mockPayload);
+      expect(verifyToken).toHaveBeenCalledWith(mockToken, 'test-secret-key-minimum-32-characters-long');
+    });
+  });
+
+  describe('requireAdmin decorator', () => {
+    it('should reject unauthenticated requests', async () => {
+      server.get('/admin', {
+        preHandler: server.requireAdmin,
+        handler: async () => ({ success: true }),
+      });
+
+      const response = await server.inject({
+        method: 'GET',
+        url: '/admin',
+      });
+
+      expect(response.statusCode).toBe(HTTP_STATUS.UNAUTHORIZED);
+      expect(response.json()).toEqual({
+        success: false,
+        error: 'Authentication required',
+      });
+    });
+
+    it('should reject non-admin users', async () => {
+      const mockPayload: TokenPayload = {
+        userId: 'user-123',
+        email: 'owner@motorghar.com',
+        role: 'OWNER',
+      };
+
+      server.get('/admin', {
+        preHandler: [server.authenticate, server.requireAdmin],
+        handler: async () => ({ success: true }),
+      });
+
+      const mockToken = 'valid.jwt.token';
+      (extractBearerToken as jest.MockedFunction<typeof extractBearerToken>).mockReturnValue(mockToken);
+      (isTokenBlacklisted as jest.MockedFunction<typeof isTokenBlacklisted>).mockResolvedValue(false);
+      (verifyToken as jest.MockedFunction<typeof verifyToken>).mockReturnValue(mockPayload);
+
+      const response = await server.inject({
+        method: 'GET',
+        url: '/admin',
+        headers: {
+          authorization: `Bearer ${mockToken}`,
+        },
+      });
+
+      expect(response.statusCode).toBe(HTTP_STATUS.FORBIDDEN);
+      expect(response.json()).toEqual({
+        success: false,
+        error: 'Admin access required',
+      });
+    });
+
+    it('should allow admin users', async () => {
+      const mockPayload: TokenPayload = {
+        userId: 'admin-123',
+        email: 'admin@motorghar.com',
+        role: USER_ROLE.ADMIN,
+      };
+
+      server.get('/admin', {
+        preHandler: [server.authenticate, server.requireAdmin],
+        handler: async () => ({ success: true }),
+      });
+
+      const mockToken = 'valid.jwt.token';
+      (extractBearerToken as jest.MockedFunction<typeof extractBearerToken>).mockReturnValue(mockToken);
+      (isTokenBlacklisted as jest.MockedFunction<typeof isTokenBlacklisted>).mockResolvedValue(false);
+      (verifyToken as jest.MockedFunction<typeof verifyToken>).mockReturnValue(mockPayload);
+
+      const response = await server.inject({
+        method: 'GET',
+        url: '/admin',
+        headers: {
+          authorization: `Bearer ${mockToken}`,
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual({ success: true });
+    });
+  });
+
+  describe('combined auth flow', () => {
+    it('should enforce both authentication and authorization', async () => {
+      server.get('/admin/sensitive', {
+        preHandler: [server.authenticate, server.requireAdmin],
+        handler: async (request) => ({
+          success: true,
+          data: 'sensitive-data',
+          userId: request.user?.userId,
+        }),
+      });
+
+      const mockPayload: TokenPayload = {
+        userId: 'admin-456',
+        email: 'super@motorghar.com',
+        role: USER_ROLE.ADMIN,
+      };
+
+      const mockToken = 'valid.admin.token';
+      (extractBearerToken as jest.MockedFunction<typeof extractBearerToken>).mockReturnValue(mockToken);
+      (isTokenBlacklisted as jest.MockedFunction<typeof isTokenBlacklisted>).mockResolvedValue(false);
+      (verifyToken as jest.MockedFunction<typeof verifyToken>).mockReturnValue(mockPayload);
+
+      const response = await server.inject({
+        method: 'GET',
+        url: '/admin/sensitive',
+        headers: {
+          authorization: `Bearer ${mockToken}`,
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = response.json();
+      expect(body.success).toBe(true);
+      expect(body.data).toBe('sensitive-data');
+      expect(body.userId).toBe('admin-456');
+    });
+  });
+});

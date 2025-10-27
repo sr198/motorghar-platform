@@ -4,6 +4,9 @@
   "include": [],
   "references": [
     {
+      "path": "../../shared/constants"
+    },
+    {
       "path": "./tsconfig.lib.json"
     },
     {

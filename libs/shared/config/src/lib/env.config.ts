@@ -3,9 +3,6 @@ import {
   DEFAULT_PORT,
   MIN_PORT,
   MAX_PORT,
-  MIN_JWT_SECRET_LENGTH,
-  JWT_ACCESS_EXPIRY_DEFAULT,
-  JWT_REFRESH_EXPIRY_DEFAULT,
   API_VERSION_DEFAULT,
   RATE_LIMIT_PUBLIC_DEFAULT,
   RATE_LIMIT_AUTHENTICATED_DEFAULT,
@@ -43,10 +40,34 @@ const envSchema = z.object({
   MINIO_BUCKET_USER_UPLOADS: z.string().default('motorghar-user-uploads'),
 
   // JWT Configuration
-  JWT_SECRET: z.string().min(MIN_JWT_SECRET_LENGTH).describe('Secret for signing JWT access tokens'),
-  JWT_REFRESH_SECRET: z.string().min(MIN_JWT_SECRET_LENGTH).describe('Secret for signing JWT refresh tokens'),
-  JWT_ACCESS_EXPIRY: z.string().default(JWT_ACCESS_EXPIRY_DEFAULT),
-  JWT_REFRESH_EXPIRY: z.string().default(JWT_REFRESH_EXPIRY_DEFAULT),
+  // Note: Validation rules (min: 32) will be moved to config service in Phase 2+ (per ADR 001)
+  JWT_SECRET: z.string().min(32).describe('Secret for signing JWT access tokens (min 32 chars)'),
+  JWT_REFRESH_SECRET: z.string().min(32).describe('Secret for signing JWT refresh tokens (min 32 chars)'),
+  JWT_ACCESS_EXPIRY: z.string().default('15m').describe('Access token TTL (e.g., 15m, 1h)'),
+  JWT_REFRESH_EXPIRY: z.string().default('7d').describe('Refresh token TTL (e.g., 7d, 30d)'),
+  JWT_ISSUER: z.string().default('motorghar').describe('JWT token issuer'),
+  JWT_AUDIENCE: z.string().default('motorghar-client').describe('JWT token audience'),
+
+  // Session Configuration
+  SESSION_MAX_PER_USER: z.string().default('5').transform(Number).pipe(z.number().min(0)).describe('Max concurrent sessions per user (0 = unlimited)'),
+  SESSION_TRACK_DEVICES: z.string().default('true').transform((val) => val === 'true').pipe(z.boolean()).describe('Enable device info tracking'),
+  SESSION_CLEANUP_INTERVAL: z.string().default('3600').transform(Number).pipe(z.number().positive()).describe('Session cleanup interval in seconds'),
+
+  // Session Features (Future)
+  SESSION_REMEMBER_ME_ENABLED: z.string().default('false').transform((val) => val === 'true').pipe(z.boolean()).describe('Enable remember-me functionality'),
+  SESSION_REMEMBER_ME_EXPIRY: z.string().default('30d').describe('Remember-me token TTL'),
+  SESSION_SLIDING_ENABLED: z.string().default('false').transform((val) => val === 'true').pipe(z.boolean()).describe('Extend session on activity'),
+
+  // Security Features (Future)
+  AUTH_IP_RATE_LIMIT_ENABLED: z.string().default('false').transform((val) => val === 'true').pipe(z.boolean()).describe('Enable IP-based rate limiting'),
+  AUTH_DETECT_SUSPICIOUS_LOGIN: z.string().default('false').transform((val) => val === 'true').pipe(z.boolean()).describe('Enable login anomaly detection'),
+  AUTH_2FA_ENABLED: z.string().default('false').transform((val) => val === 'true').pipe(z.boolean()).describe('Enable two-factor authentication'),
+
+  // Performance Configuration (Future)
+  RBAC_CACHE_ENABLED: z.string().default('false').transform((val) => val === 'true').pipe(z.boolean()).describe('Cache user roles in Redis'),
+  RBAC_CACHE_TTL: z.string().default('300').transform(Number).pipe(z.number().positive()).describe('Role cache TTL in seconds'),
+  SESSION_CACHE_ENABLED: z.string().default('false').transform((val) => val === 'true').pipe(z.boolean()).describe('Cache session validation'),
+  SESSION_CACHE_TTL: z.string().default('60').transform(Number).pipe(z.number().positive()).describe('Session cache TTL in seconds'),
 
   // API Configuration
   API_VERSION: z.string().default(API_VERSION_DEFAULT),
@@ -62,7 +83,7 @@ const envSchema = z.object({
   EMAIL_PROVIDER: z.enum(['console', 'smtp']).default('console'),
   EMAIL_FROM: z.string().email(),
   SMTP_HOST: z.string().optional(),
-  SMTP_PORT: z.string().transform(Number).pipe(z.number().positive()).optional(),
+  SMTP_PORT: z.string().optional().transform((val) => val ? Number(val) : undefined).pipe(z.number().positive().optional()),
   SMTP_USER: z.string().optional(),
   SMTP_PASSWORD: z.string().optional(),
 
